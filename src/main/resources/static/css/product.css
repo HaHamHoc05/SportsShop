@@ -1,0 +1,168 @@
+/* =============================
+   GLOBAL STYLES
+   ============================= */
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #28a745;
+    --warning-color: #ff7f00;
+    --danger-color: #d9534f;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-light);
+    margin: 0;
+    padding: 0;
+}
+
+/* =============================
+   CARD STYLES
+   ============================= */
+.card {
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Product image */
+.product-img, .product-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.product-img:hover, .product-image:hover {
+    transform: scale(1.05);
+}
+
+/* Card title & price */
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    min-height: 48px;
+    color: #333;
+}
+
+.text-primary.fw-bold {
+    color: var(--danger-color) !important;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* =============================
+   REGISTER FORM
+   ============================= */
+.register-card {
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+.register-card .card-body {
+    padding: 2.5rem;
+}
+
+.register-card h2 {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.mb-3 label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ced4da;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+}
+
+/* Buttons */
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(40,167,69,0.25);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background-color: #e66e00;
+    border-color: #e66e00;
+}
+
+/* =============================
+   PRODUCT DETAIL TABLE
+   ============================= */
+.variant-table th, .variant-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.stock-badge {
+    font-size: 1rem;
+    padding: 0.5em 0.75em;
+}
+
+/* Product description */
+.product-description h5 {
+    border-bottom: 2px solid #ffc107;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+    color: var(--primary-color);
+    border-radius: 8px;
+    margin: 0 3px;
+}
+
+.pagination .page-item.active .page-link,
+.pagination .page-item .page-link:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+/* Banner */
+#banner .carousel-item img {
+    height: 600px;
+    object-fit: cover;
+}

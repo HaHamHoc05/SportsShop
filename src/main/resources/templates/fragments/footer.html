@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .footer {
+        background-color: #343a40;
+        color: white;
+        padding: 40px 0;
+        margin-top: 50px;
+    }
+    .footer a {
+        color: #adb5bd;
+        text-decoration: none;
+    }
+    .footer a:hover {
+        color: #007bff;
+    }
+</style>
+<footer class="footer" th:fragment="siteFooter">
+    <div class="container" >
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Về SÚT CHÍNH XÁC</h5>
+                <p>Cung cấp giày đá banh chính hãng từ các thương hiệu hàng đầu thế giới với giá tốt nhất.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Liên Hệ</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Đường ....., TP. Hồ Chí Minh</li>
+                    <li><i class="fas fa-phone"></i> 0901 234 567</li>
+                    <li><i class="fas fa-envelope"></i> support@giaydabong.vn</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Theo Dõi Chúng Tôi</h5>
+                <ul class="list-unstyled social-icons">
+                    <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center">
+            <p>&copy; 2026 Giày Đá Bóng. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+</html>

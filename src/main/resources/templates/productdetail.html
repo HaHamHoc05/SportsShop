@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${product.mahh} + ' - Sản Phẩm'">Chi Tiết Sản Phẩm</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/product.css}" />
+
+
+</head>
+<body>
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <!-- Ảnh sản phẩm -->
+        <div class="col-md-6 text-center">
+            <div class="product-image-wrapper position-relative">
+                <img th:src="@{|/images/${product.hinh}|}" th:alt="${product.tenhh}" class="product-image img-fluid border rounded shadow-sm">
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-md-6">
+            <h2 class="fw-bold" th:text="${product.tenhh}">Tên sản phẩm</h2>
+
+            <!-- Giá -->
+            <p class="h4 text-danger fw-bold" th:text="${#numbers.formatDecimal(mainPrice,0,0)} + '₫'">0₫</p>
+
+            <form th:action="@{/cart/add}" method="post" id="addCartForm">
+                <input type="hidden" name="productId" th:value="${product.mahh}" />
+                <input type="hidden" name="name" th:value="${product.tenhh}" />
+                <input type="hidden" name="image" th:value="${product.hinh}" />
+                <input type="hidden" name="quantity" id="quantityInput" value="1" />
+
+            <!-- Lựa chọn màu & size -->
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label for="colorSelect" class="form-label">Màu</label>
+                    <select id="colorSelect" class="form-select" required>
+                        <option value="">-- Chọn màu --</option>
+                        <option th:each="c : ${colors}" th:value="${c.idmau}" th:text="${c.mausac}"></option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="sizeSelect" class="form-label">Size</label>
+                    <select id="sizeSelect" class="form-select" required>
+                        <option value="">-- Chọn size --</option>
+                        <option th:each="s : ${sizes}" th:value="${s.idsize}" th:text="${s.size}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="quantityDisplay" class="form-label"><b>Số Lượng:</b></label>
+                <input type="number" class="form-control" id="quantityDisplay" name="quantity" value="1" min="1" max="10" style="width: 100px;">
+            </div>
+
+            <!-- Kho hàng & nút thêm vào giỏ -->
+            <div class="mb-3 d-flex align-items-center gap-3">
+                <span class="fw-bold">Kho hàng:</span>
+                <span id="stockInfo" class="badge bg-info text-dark stock-badge">-</span>
+            </div>
+            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-uppercase shadow-sm">
+                <i class="fa fa-cart-plus me-2"></i> Thêm vào giỏ
+            </button>
+            </form>
+
+            <!-- Bảng chi tiết variant -->
+            <h5 class="mt-4">Thông tin chi tiết</h5>
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover table-bordered align-middle variant-table">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Màu</th>
+                        <th>Size</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng còn</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="v : ${variants}"
+                        th:attr="data-idmau=${v.idmau},data-idsize=${v.idsize},data-dongia=${v.dongia},data-soluongton=${v.soluongton}">
+                        <td th:text="${v.mausac.mausac}">Màu</td>
+                        <td th:text="${v.sizegiay.size}">Size</td>
+                        <td th:text="${#numbers.formatDecimal(v.dongia,0,0)} + '₫'">0₫</td>
+                        <td th:text="${v.soluongton}">0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mô tả sản phẩm -->
+            <div class="product-description mt-4 p-3 bg-light rounded shadow-sm">
+                <h5 class="fw-bold">Mô tả sản phẩm</h5>
+                <p th:text="${product.mota}" class="text-muted">Mô tả chi tiết về đôi giày sẽ hiển thị ở đây.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+<!-- Include variant selection script (vanilla JS) -->
+<script th:src="@{/js/product-variants.js}"></script>
+
+</body>
+</html>

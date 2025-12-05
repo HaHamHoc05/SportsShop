@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/product.css}" />
+
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card register-card">
+                <div class="card-body">
+
+                    <h2 class="text-center mb-4 fw-bold">Đăng Ký Tài Khoản</h2>
+
+                    <form th:action="@{/register}" th:object="${customer}" method="post" novalidate>
+
+                        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                        <div class="mb-3">
+                            <label for="tenkh">Họ và tên</label>
+                            <input type="text" id="tenkh" class="form-control" th:field="*{tenkh}" placeholder="Họ và tên" required />
+                            <div class="text-danger" th:if="${#fields.hasErrors('tenkh')}" th:errors="*{tenkh}"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username">Tên đăng nhập</label>
+                                <input type="text" id="username" class="form-control" th:field="*{username}" placeholder="Tên đăng nhập" minlength="4" required />
+                                <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="Email" required />
+                                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="matkhau">Mật khẩu</label>
+                                <input type="password" id="matkhau" class="form-control" th:field="*{matkhau}" placeholder="Mật khẩu" minlength="6" required />
+                                <div class="text-danger" th:if="${#fields.hasErrors('matkhau')}" th:errors="*{matkhau}"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword">Xác nhận mật khẩu</label>
+                                <input type="password" id="confirmPassword" class="form-control" th:field="*{confirmPassword}" placeholder="Xác nhận mật khẩu" minlength="6" required />
+                                <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="diachi">Địa chỉ</label>
+                            <textarea id="diachi" class="form-control" th:field="*{diachi}" rows="2" placeholder="Địa chỉ (không bắt buộc)"></textarea>
+                            <div class="text-danger" th:if="${#fields.hasErrors('diachi')}" th:errors="*{diachi}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sodienthoai">Số điện thoại</label>
+                            <input type="tel" id="sodienthoai" class="form-control" th:field="*{sodienthoai}" placeholder="Ví dụ: 0912345678" pattern="\+?0?\d{9,12}" required />
+                            <div class="text-danger" th:if="${#fields.hasErrors('sodienthoai')}" th:errors="*{sodienthoai}"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a th:href="@{/login}" class="btn btn-link">Đã có tài khoản? Đăng nhập</a>
+                            <button type="submit" class="btn btn-success btn-lg">Đăng ký</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: siteFooter}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .product-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
+        .qty-btn { width: 36px; }
+        .price { color: #e74c3c; font-weight: 700; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5">
+    <h2>Giỏ hàng</h2>
+
+    <div th:if="${items.size()} == 0">
+        <div class="alert alert-info">Giỏ hàng đang trống.</div>
+        <a href="/" class="btn btn-secondary">Tiếp tục mua sắm</a>
+    </div>
+
+    <div th:if="${items.size()} &gt; 0">
+        <form method="post" th:action="@{/cart/clear}">
+            <button type="submit" class="btn btn-danger mb-3">Xóa toàn bộ giỏ hàng</button>
+        </form>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Sản phẩm</th>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="it : ${items}">
+                <td><img th:src="@{|/images/${it.image}|}" th:alt="${it.name}" class="product-thumb"></td>
+                <td th:text="${it.name}">Tên</td>
+                <td th:text="${it.sizeLabel}">Size</td>
+                <td th:text="${it.colorLabel}">Màu</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <form th:action="@{/cart/decrement}" method="post" style="display:inline-block; margin-right:4px;">
+                            <input type="hidden" name="key" th:value="${it.key}" />
+                            <button type="submit" class="btn btn-light qty-btn">-</button>
+                        </form>
+                        <span th:text="${it.quantity}" style="min-width:28px; text-align:center; display:inline-block;"></span>
+                        <form th:action="@{/cart/increment}" method="post" style="display:inline-block; margin-left:4px;">
+                            <input type="hidden" name="key" th:value="${it.key}" />
+                            <button type="submit" class="btn btn-light qty-btn">+</button>
+                        </form>
+                    </div>
+                </td>
+                <td class="price" th:text="${#numbers.formatDecimal(it.unitPrice,0,0)} + '₫'">0₫</td>
+                <td class="price" th:text="${#numbers.formatDecimal(it.subtotal,0,0)} + '₫'">0₫</td>
+                <td>
+                    <form th:action="@{/cart/remove}" method="post">
+                        <input type="hidden" name="key" th:value="${it.key}" />
+                        <button type="submit" class="btn btn-outline-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-right">
+            <h4>Tổng cộng: <span class="price" th:text="${#numbers.formatDecimal(total,0,0)} + '₫'">0₫</span></h4>
+            <a href="/" class="btn btn-secondary">Tiếp tục mua sắm</a>
+            <button th:href="@{/checkout}" class="btn btn-success">Tiến hành thanh toán</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+</body>
+</html>
