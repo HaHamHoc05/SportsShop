@@ -26,6 +26,7 @@ public class LoginController {
     @PostMapping("/login")
     public String doLogin(@RequestParam String username,
                           @RequestParam String password,
+                          @RequestParam(required = false) String redirect,
                           Model model,
                           HttpSession session) {
         Optional<Customer> opt = customerService.authenticate(username, password);
@@ -33,10 +34,14 @@ public class LoginController {
             Customer cs = opt.get();
             session.setAttribute("username", cs.getUsername());
             session.setAttribute("userid", cs.getMakh());
-            System.out.println(username);
-            return "redirect:/"; // thành công về trang chủ
+            // Nếu có redirect  quay lại đúng trang trước đó
+            if (redirect != null && !redirect.isEmpty()) {
+                return "redirect:" + redirect;
+            }
 
+            return "redirect:/"; // Mặc định
         }
+
         model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng");
         model.addAttribute("username", null); // để fragment header nhận null
 

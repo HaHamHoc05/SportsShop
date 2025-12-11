@@ -1,6 +1,7 @@
 package com.example.giaybongda.model;
 
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,6 @@ public class ProductWithPrice {
     private String tenhh;
     private String hinh;
     private Float dongia;
+
+
 }

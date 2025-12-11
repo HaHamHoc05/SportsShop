@@ -30,5 +30,9 @@ public class CustomerService {
         }
         return Optional.empty();
     }
-
+    //
+    public Optional<Customer> findById(Integer id){
+        if(id == null) return Optional.empty();
+        return repoCustomer.findById(id);
+    }
 }

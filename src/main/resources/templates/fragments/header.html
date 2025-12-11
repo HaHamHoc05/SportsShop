@@ -1,36 +1,7 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
-<style>
-    /* Đã dọn dẹp CSS để tránh xung đột.
-      'navbar-dark' sẽ tự động làm logo màu trắng.
-    */
-    .navbar-brand {
-        font-weight: bold;
-    }
-
-    /* Tạo khoảng cách cho nhóm menu ở giữa */
-    .navbar-nav.nav-center {
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
-    }
-
-    /* Tạo khoảng cách cho nhóm hành động bên phải */
-    .navbar-nav.nav-right {
-        display: flex;
-        /* Luôn giữ hàng ngang (quan trọng khi thu nhỏ) */
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem; /* Khoảng cách nhỏ hơn cho các icon/hành động */
-    }
-
-    /* Đảm bảo form tìm kiếm không bị vỡ trên màn hình vừa */
-    @media (min-width: 992px) and (max-width: 1200px) {
-        .nav-center .form-control {
-            width: 120px; /* Thu nhỏ ô tìm kiếm một chút */
-        }
-    }
-</style>
+<!-- header.html (Fragment) -->
+<header th:fragment="siteHeader" class="header">
+<link rel="stylesheet" th:href="@{/css/product.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" th:fragment="siteHeader">
     <div class="container">
@@ -45,62 +16,137 @@
         <div class="collapse navbar-collapse" id="navbarNav">
 
             <ul class="navbar-nav mx-auto nav-center">
-                <li class="nav-item"><a class="nav-link active" th:href="@{/}">Trang Chủ</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/products}">Sản Phẩm</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Liên Hệ</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Trang Chủ</a></li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/products}">Sản Phẩm</a></li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBrands" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">Thương Hiệu</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownBrands">
-                        <li><a class="dropdown-item" th:href="@{/products/brand/adidas}">Adidas</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/brand/nike}">Nike</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/brand/puma}">Puma</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/brand/mizuno}">Mizuno</a></li>
-                    </ul>
+                    <a class="nav-link dropdown-toggle" th:href="@{/products}" data-bs-toggle="dropdown" >Giày Bóng Đá</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/products/brand/adidas}">Adidas</a></li>
+                            <li><a class="dropdown-item" th:href="@{/products/brand/nike}">Nike</a></li>
+                            <li><a class="dropdown-item" th:href="@{/products/brand/puma}">Puma</a></li>
+                            <li><a class="dropdown-item" th:href="@{/products/brand/mizuno}">Mizuno</a></li>
+                        </ul>
                 </li>
 
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFields" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">Sản Phẩm</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownFields">
-                        <li><a class="dropdown-item" th:href="@{/products/field/natural}">Sân cỏ tự nhiên</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/field/artificial}">Sân cỏ nhân tạo</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/field/futsal}">Sân futsal</a></li>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Phụ Kiện</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/products/brand/adidas}">Áo Bóng Đá</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/brand/nike}">Balo/Túi Thể Thao</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/brand/puma}">Vớ</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/brand/mizuno}">Khác</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <form class="d-flex" th:action="@{/search}" method="get">
-                        <input class="form-control me-2" type="text" name="q" placeholder="Tìm kiếm">
-                        <button class="btn btn-outline-success" type="submit">Tìm</button>
+                    <a class="nav-link" href="#">Tin Tức</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Liên Hệ</a></li>
+
+                <!-- Search -->
+                <li class="nav-item mx-3 position-relative" style="overflow: visible;">
+                    <form class="search-bar" th:action="@{/search}" method="get">
+                        <input id="searchInput" type="text" name="q" placeholder="Bạn đang tìm kiếm ....">
+                        <button type="submit"><i class="fa fa-search"></i></button>
                     </form>
+
+                    <ul id="suggestBox" class="suggest-list"
+                        style="position:absolute; top:40px; left:0; background:white; width:100%;
+                        border:1px solid #ddd; list-style:none; display:none; z-index:2000;">
+                    </ul>
                 </li>
             </ul>
 
             <ul class="navbar-nav ms-auto nav-right">
                 <li class="nav-item position-relative">
-                    <a class="nav-link position-relative" th:href="@{/cart}"><i class="fas fa-shopping-cart"></i> Giỏ Hàng</a>
-                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle" th:text="${cartCount}">0</span>
+                    <a class="nav-link position-relative" th:href="@{/cart}">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                          th:text="${cartCount}">0</span>
                 </li>
 
-                <li class="nav-item" th:if="${session.username == null}">
-                    <a class="nav-link" th:href="@{/register}">Đăng Ký</a>
-                </li>
-                <li class="nav-item" th:if="${session.username == null}">
-                    <a class="nav-link" th:href="@{/login}">Đăng Nhập</a>
+                <li class="nav-item dropdown" th:if="${session.username != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false" th:text="${session.username}">
+                        User
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="nav-item" th:if="${session.username != null}">
-                    <a class="nav-link" href="#">Xin chào, <span th:text="${session.username}">User</span></a>
+                <!-- Nếu chưa đăng nhập -->
+                <li class="nav-item " th:if="${session.username == null}">
+                    <a class="nav-link" th:href="@{/register}">Đăng ký</a>
                 </li>
-                <li class="nav-item" th:if="${session.username != null}">
-                    <a class="nav-link" th:href="@{/logout}">Đăng xuất</a>
+                <li class="nav-item " th:if="${session.username == null}">
+                    <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
                 </li>
             </ul>
 
         </div>
     </div>
 </nav>
-</html>
+
+<script>
+    let searchInput = document.getElementById("searchInput");
+    let suggestBox = document.getElementById("suggestBox");
+
+    searchInput.addEventListener("input", async function () {
+        let keyword = searchInput.value.trim();
+
+        if (keyword.length === 0) {
+            suggestBox.style.display = "none";
+            return;
+        }
+
+        let response = await fetch(`/suggest?q=${keyword}`);
+        let suggestions = await response.json();
+
+        if (suggestions.length === 0) {
+            suggestBox.style.display = "none";
+            return;
+        }
+
+        suggestBox.innerHTML = suggestions.map(item => `
+            <li class="suggest-item d-flex align-items-center"
+        data-name="${item.tenhh}"
+        style="cursor:pointer; padding:6px; border-bottom:1px solid #eee;">
+
+        <img src="/images/${item.hinh}" width="30" height="30"
+             style="margin-right:6px; object-fit:cover;">
+
+        <span>${item.tenhh}</span>
+
+        <span style="margin-left:auto; color:red;">
+            ${item.dongia.toLocaleString()}₫
+        </span>
+    </li>
+        `).join("");
+
+        suggestBox.style.display = "block";
+    });
+
+    suggestBox.addEventListener("click", function (e) {
+        if (e.target.closest(".suggest-item")) {
+            let name = e.target.closest(".suggest-item").dataset.name;
+            searchInput.value = name;
+            suggestBox.style.display = "none";
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!searchInput.contains(e.target)) {
+            suggestBox.style.display = "none";
+        }
+    });
+</script>
+</header>

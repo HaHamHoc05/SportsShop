@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CartService {
@@ -23,7 +20,7 @@ public class CartService {
         Object obj = session.getAttribute(CART_SESSION_KEY);
         if (obj instanceof Map) return (Map<String, CartItem>) obj;
         //gio hang dung linkedhashmap de hien thi dung thu tu UI
-        Map<String, CartItem> map = new HashMap<String, CartItem>();
+        Map<String, CartItem> map = new LinkedHashMap<>();
         session.setAttribute(CART_SESSION_KEY, map);
         return map;
     }

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Quả Tìm Kiếm</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/product.css}" />
+</head>
+<body>
+
+<!-- Header -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="container my-5">
+
+    <div class="row">
+
+        <!-- Bộ lọc bên trái -->
+        <aside class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-filter me-2"></i> Bộ Lọc</h5>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="mb-3">Thương Hiệu</h6>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"> Nike</div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"> Adidas</div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"> Puma</div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox"> Mizuno</div>
+
+                    <hr>
+
+                    <h6 class="mb-3">Khoảng Giá</h6>
+                    <label for="priceRange" class="form-label">
+                        Tối đa: <span id="priceValue">3.000.000</span>₫
+                    </label>
+                    <input type="range" class="form-range" min="500000" max="5000000" step="100000" id="priceRange" value="3000000">
+
+                    <button class="btn btn-primary w-100 mt-3">Áp dụng</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Danh sách sản phẩm bên phải -->
+        <section class="col-lg-9">
+
+            <!-- Tiêu đề tìm kiếm -->
+            <h2 class="mb-4 text-center">
+                <span th:if="${keyword != null}" th:text="'Kết quả tìm kiếm cho: ' + ${keyword}"></span>
+                <span th:if="${keyword == null}">Tất cả sản phẩm</span>
+            </h2>
+
+            <!-- Không có sản phẩm -->
+            <div th:if="${products.size() == 0}" class="alert alert-warning text-center">
+                Không tìm thấy sản phẩm nào phù hợp với từ khóa "<b th:text="${keyword}"></b>"
+            </div>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="row" th:if="${products.size() > 0}">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-stretch"
+                     th:each="product : ${products}">
+                    <a th:href="@{'/product/' + ${product.mahh}}" class="text-decoration-none w-100">
+
+                        <div class="card w-100 shadow-sm border-0 h-100 d-flex flex-column">
+                            <img th:src="@{'/images/' + ${product.hinh}}"
+                                 class="card-img-top product-img"
+                                 th:alt="${product.tenhh}"
+                                 style="height:250px; object-fit:cover;">
+
+                            <div class="card-body d-flex flex-column justify-content-between text-center">
+                                <h5 class="card-title mb-2" th:text="${product.tenhh}">Tên sản phẩm</h5>
+
+                                <p class="mb-0" th:text="${product.dongia != null ?
+                                    #numbers.formatDecimal(product.dongia, 0, 0) + '₫' : '0₫'}"></p>
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: siteFooter}"></div>
+
+<script>
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+    priceRange.addEventListener("input", function () {
+        priceValue.textContent = new Intl.NumberFormat("vi-VN").format(this.value);
+    });
+</script>
+
+</body>
+</html>

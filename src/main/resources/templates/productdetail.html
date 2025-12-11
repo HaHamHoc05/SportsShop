@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<div th:replace="fragments/header :: siteHeader"></div>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <div class="container mt-5 mb-5">
     <div class="row">
@@ -29,7 +29,7 @@
             <h2 class="fw-bold" th:text="${product.tenhh}">Tên sản phẩm</h2>
 
             <!-- Giá -->
-            <p class="h4 text-danger fw-bold" th:text="${#numbers.formatDecimal(mainPrice,0,0)} + '₫'">0₫</p>
+            <p class="h4 text-danger fw-bold" th:text="${#numbers.formatDecimal(mainPrice, 0, 'POINT', 0, 'COMMA')} + 'đ'">0₫</p>
 
             <form th:action="@{/cart/add}" method="post" id="addCartForm">
                 <input type="hidden" name="productId" th:value="${product.mahh}" />
@@ -41,28 +41,25 @@
             <div class="row mb-3">
                 <div class="col-6">
                     <label for="colorSelect" class="form-label">Màu</label>
-                    <select id="colorSelect" class="form-select" required>
+                    <select id="colorSelect" name="colorId" class="form-select" >
                         <option value="">-- Chọn màu --</option>
                         <option th:each="c : ${colors}" th:value="${c.idmau}" th:text="${c.mausac}"></option>
                     </select>
                 </div>
                 <div class="col-6">
                     <label for="sizeSelect" class="form-label">Size</label>
-                    <select id="sizeSelect" class="form-select" required>
+                    <select id="sizeSelect" name="sizeId" class="form-select" >
                         <option value="">-- Chọn size --</option>
                         <option th:each="s : ${sizes}" th:value="${s.idsize}" th:text="${s.size}"></option>
                     </select>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="quantityDisplay" class="form-label"><b>Số Lượng:</b></label>
-                <input type="number" class="form-control" id="quantityDisplay" name="quantity" value="1" min="1" max="10" style="width: 100px;">
-            </div>
+
 
             <!-- Kho hàng & nút thêm vào giỏ -->
             <div class="mb-3 d-flex align-items-center gap-3">
                 <span class="fw-bold">Kho hàng:</span>
-                <span id="stockInfo" class="badge bg-info text-dark stock-badge">-</span>
+                <span id="stockInfo" class="badge bg-info text-dark stock-badge" th:text="${totalStock}">-</span>
             </div>
             <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-uppercase shadow-sm">
                 <i class="fa fa-cart-plus me-2"></i> Thêm vào giỏ
@@ -86,7 +83,7 @@
                         th:attr="data-idmau=${v.idmau},data-idsize=${v.idsize},data-dongia=${v.dongia},data-soluongton=${v.soluongton}">
                         <td th:text="${v.mausac.mausac}">Màu</td>
                         <td th:text="${v.sizegiay.size}">Size</td>
-                        <td th:text="${#numbers.formatDecimal(v.dongia,0,0)} + '₫'">0₫</td>
+                        <td th:text="${#numbers.formatDecimal(v.dongia, 0, 'POINT', 0, 'COMMA')} + 'đ'">0₫</td>
                         <td th:text="${v.soluongton}">0</td>
                     </tr>
                     </tbody>

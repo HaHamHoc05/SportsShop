@@ -31,6 +31,9 @@ public class Product {
     private Integer soluotxem;
     private LocalDate ngaylap;
     private String mota;
+
+    private Integer tinhtrang; // 1 = con hang , 0 = hethang
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductDetail> chiTiet;
 

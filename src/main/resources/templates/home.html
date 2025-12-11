@@ -50,7 +50,7 @@
                 <img th:src="@{'/images/' + ${p.hinh}}" class="card-img-top" th:alt="${p.tenhh}" style="height: 250px; object-fit: cover;">
                 <div class="card-body text-center">
                     <h5 class="card-title" th:text="${p.tenhh}">Tên sản phẩm</h5>
-                    <p class="card-text price" th:text="${#numbers.formatDecimal(p.dongia,0,0)} + '₫'">3.000.000₫</p>
+                    <p class="card-text price" th:text="${#numbers.formatDecimal(p.dongia,0, 'POINT', 0, 'COMMA')} + 'đ'">3.000.000₫</p>
                     <a th:href="@{'/product/' + ${p.mahh}}" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             <img th:src="@{'/images/' + ${p.hinh}}" class="card-img-top" th:alt="${p.tenhh}" style="height: 250px; object-fit: cover;">
             <div class="card-body text-center">
                 <h5 class="card-title" th:text="${p.tenhh}">Tên sản phẩm</h5>
-                <p class="card-text price" th:text="${#numbers.formatDecimal(p.dongia,0,0)} + '₫'">3.000.000₫</p>
+                <p class="card-text price" th:text="${#numbers.formatDecimal(p.dongia,0, 'POINT', 0, 'COMMA')} + 'đ'">3.000.000₫</p>
                 <a th:href="@{'/product/' + ${p.mahh}}" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
             </div>
         </div>

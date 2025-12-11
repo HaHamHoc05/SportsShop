@@ -45,4 +45,8 @@ public class ProductService {
         }
         return null;
     }
+    public List<ProductWithPrice> searchProducts(String keyword) {
+        return productRepo.findByTenhhContainingIgnoreCase(keyword);
+    }
+
 }

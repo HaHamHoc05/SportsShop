@@ -33,5 +33,12 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
             "GROUP BY p.mahh, p.tenhh, p.hinh")
     Page<ProductWithPrice> findAllWithPrice(Pageable pageable);
 
+    @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, min(pd.dongia)) " +
+            "FROM Product p JOIN p.chiTiet pd " +
+            "WHERE LOWER(p.tenhh) LIKE LOWER(CONCAT('%', :keyword, '%'))\n" +
+            "GROUP BY p.mahh, p.tenhh, p.hinh")
+    List<ProductWithPrice> findByTenhhContainingIgnoreCase(String keyword);
+
+
 
 }
