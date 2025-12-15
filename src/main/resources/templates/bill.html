@@ -106,12 +106,12 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Số điện thoại</label>
-                            <input class="form-control" name="sodienthoai" th:value="${customer?.sodienthoai}" th:readonly="${customer != null}" required placeholder="0912..." />
+                            <input class="form-control" name="sodienthoai" th:value="${customer?.sodienthoai}"  required placeholder="0912..." />
                         </div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Địa chỉ</label>
-                        <input class="form-control" name="diachi" th:value="${customer?.diachi}" th:readonly="${customer != null}" required placeholder="Số nhà, đường..." />
+                        <input class="form-control" name="diachi" th:value="${customer?.diachi}"  required placeholder="Số nhà, đường..." />
                     </div>
 
                     <h5 class="fw-bold mt-5 mb-3 text-secondary"><i class="bi bi-credit-card-2-front me-2"></i>Thanh toán</h5>
@@ -135,28 +135,28 @@
                             <i class="bi bi-qr-code-scan ms-auto fs-4 text-primary"></i>
                         </label>
 
-<!--                        <div id="bankInfoContainer" class="rounded p-4 mt-2 mb-3"-->
-<!--                             th:if="${qrDataUrl != null}">-->
-<!--                            <div class="row align-items-center">-->
-<!--                                <div class="col-md-5 text-center mb-3 mb-md-0">-->
-<!--                                    <img th:src="${qrDataUrl}"-->
-<!--                                         alt="QR Code" class="img-fluid rounded border shadow-sm" style="max-width: 180px;">-->
-<!--                                    <div class="small text-muted mt-2">Quét mã để thanh toán</div>-->
-<!--                                </div>-->
-<!--                                <div class="col-md-7">-->
-<!--                                    <h6 class="fw-bold text-primary mb-3">Thông tin chuyển khoản thủ công</h6>-->
-<!--                                    <ul class="list-unstyled mb-0 text-sm">-->
-<!--                                        <li class="mb-2"><strong>Ngân hàng:</strong> <span th:text="${bankName}"></span></li>-->
-<!--                                        <li class="mb-2"><strong>Số tài khoản:</strong> <span class="badge bg-light text-dark border fs-6" th:text="${bankAccountNumber}"></span></li>-->
-<!--                                        <li class="mb-2"><strong>Chủ tài khoản:</strong> <span th:text="${bankAccountName}"></span></li>-->
-<!--                                        <li class="mb-0 alert alert-warning py-2 px-3 small">-->
-<!--                                            <i class="bi bi-info-circle me-1"></i>-->
-<!--                                            Nội dung CK: <strong>[Tên của bạn] + [SĐT]</strong>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div id="bankInfoContainer" class="rounded p-4 mt-2 mb-3"
+                             th:if="${qrDataUrl != null}">
+                            <div class="row align-items-center">
+                                <div class="col-md-5 text-center mb-3 mb-md-0">
+                                    <img th:src="${qrDataUrl}"
+                                         alt="QR Code" class="img-fluid rounded border shadow-sm" style="max-width: 180px;">
+                                    <div class="small text-muted mt-2">Quét mã để thanh toán</div>
+                                </div>
+                                <div class="col-md-7">
+                                    <h6 class="fw-bold text-primary mb-3">Thông tin chuyển khoản thủ công</h6>
+                                    <ul class="list-unstyled mb-0 text-sm">
+                                        <li class="mb-2"><strong>Ngân hàng:</strong> <span th:text="${bankName}"></span></li>
+                                        <li class="mb-2"><strong>Số tài khoản:</strong> <span class="badge bg-light text-dark border fs-6" th:text="${bankAccountNumber}"></span></li>
+                                        <li class="mb-2"><strong>Chủ tài khoản:</strong> <span th:text="${bankAccountName}"></span></li>
+                                        <li class="mb-0 alert alert-warning py-2 px-3 small">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Nội dung CK: <strong>[Tên của bạn] + [SĐT]</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-4">

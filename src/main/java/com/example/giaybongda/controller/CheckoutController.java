@@ -4,6 +4,7 @@ import com.example.giaybongda.model.CartItem;
 import com.example.giaybongda.service.CartService;
 import com.example.giaybongda.service.CheckoutService;
 import com.example.giaybongda.service.CustomerService;
+import com.example.giaybongda.utils.VietQR;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.ByteArrayOutputStream;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -41,7 +43,7 @@ public class CheckoutController {
     private String bankAccountNumber;
     @Value("${bank.account.name:}")
     private String bankAccountName;
-    @Value("${bank.name:}")
+    @Value("${bank.bin:970422}")
     private String bankName;
 
     @GetMapping("/checkout")
@@ -152,11 +154,13 @@ public class CheckoutController {
         model.addAttribute("diachi", diachi);
 
         if ("bank".equals(paymentType)) {
-
-            String payload = "0002010102110216" + bankName + bankAccountNumber
-                    + "54" + total // Số tiền
-                    + "58VN"
-                    + "59" + bankAccountName;
+            // xu ly du lieu dau vao
+            String payload = VietQR.build(
+                    bankName.trim(),          // BIN ngân hàng
+                    bankAccountNumber.trim(), // Số tài khoản
+                    total,                    // Số tiền
+                    "DH" + masohd              // Nội dung chuyển khoản
+            );
 
             try {
                 // --- Bước 2: Sinh QR bằng ZXing ---

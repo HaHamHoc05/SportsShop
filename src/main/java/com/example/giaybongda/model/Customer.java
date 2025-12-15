@@ -18,6 +18,7 @@ import lombok.*;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "makh")
     private Integer makh;
 
     @NotBlank(message = "Tên không được để trống")
