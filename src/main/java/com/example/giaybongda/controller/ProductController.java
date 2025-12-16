@@ -36,8 +36,8 @@ public class ProductController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
 
-        model.addAttribute("brands", brand);
-        model.addAttribute("maxPrice", maxPrice);
+//        model.addAttribute("brands", brand);
+//        model.addAttribute("maxPrice", maxPrice);
 
         return "products"; // trả về trang Thymeleaf
 

@@ -34,6 +34,10 @@ public class LoginController {
             Customer cs = opt.get();
             session.setAttribute("username", cs.getUsername());
             session.setAttribute("userid", cs.getMakh());
+
+            String role = cs.getRole() != null ? cs.getRole() : "USER";
+            session.setAttribute("role", role);
+
             // Nếu có redirect  quay lại đúng trang trước đó
             if (redirect != null && !redirect.isEmpty()) {
                 return "redirect:" + redirect;

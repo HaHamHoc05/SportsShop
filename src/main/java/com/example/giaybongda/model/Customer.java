@@ -46,4 +46,7 @@ public class Customer {
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^\\+?0?\\d{9,12}$", message = "Số điện thoại không hợp lệ")
     private String sodienthoai;
+
+    @Column(name = "role")
+    private String role;
 }

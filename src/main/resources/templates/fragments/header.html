@@ -3,7 +3,7 @@
 <link rel="stylesheet" th:href="@{/css/product.css}" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" th:fragment="siteHeader">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
 
         <a class="navbar-brand" th:href="@{/}">Giày Bóng Đá</a>
@@ -23,7 +23,7 @@
                     <a class="nav-link" th:href="@{/products}">Sản Phẩm</a></li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" th:href="@{/products}" data-bs-toggle="dropdown" >Giày Bóng Đá</a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" >Giày Bóng Đá</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/products/brand/adidas}">Adidas</a></li>
                             <li><a class="dropdown-item" th:href="@{/products/brand/nike}">Nike</a></li>
@@ -77,6 +77,9 @@
                         User
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="userDropdown">
+<!--                        <li th:if="${session.role == 'ADMIN'}">-->
+<!--                            <a class="dropdown-item" th:href="@{/admin}">Quản lý cửa hàng</a>-->
+<!--                        </li>-->
                         <li>
                             <a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
                         </li>
@@ -97,56 +100,56 @@
 </nav>
 
 <script>
-    let searchInput = document.getElementById("searchInput");
-    let suggestBox = document.getElementById("suggestBox");
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById("searchInput");
+        const suggestBox = document.getElementById("suggestBox");
 
-    searchInput.addEventListener("input", async function () {
-        let keyword = searchInput.value.trim();
+        if (!searchInput || !suggestBox) return; // tránh crash JS
 
-        if (keyword.length === 0) {
-            suggestBox.style.display = "none";
-            return;
-        }
+        searchInput.addEventListener("input", async function () {
+            let keyword = searchInput.value.trim();
+            if (!keyword) {
+                suggestBox.style.display = "none";
+                return;
+            }
 
-        let response = await fetch(`/suggest?q=${keyword}`);
-        let suggestions = await response.json();
+            let response = await fetch(`/suggest?q=${keyword}`);
+            let suggestions = await response.json();
 
-        if (suggestions.length === 0) {
-            suggestBox.style.display = "none";
-            return;
-        }
+            if (!suggestions.length) {
+                suggestBox.style.display = "none";
+                return;
+            }
 
-        suggestBox.innerHTML = suggestions.map(item => `
+            suggestBox.innerHTML = suggestions.map(item => `
             <li class="suggest-item d-flex align-items-center"
-        data-name="${item.tenhh}"
-        style="cursor:pointer; padding:6px; border-bottom:1px solid #eee;">
-
-        <img src="/images/${item.hinh}" width="30" height="30"
-             style="margin-right:6px; object-fit:cover;">
-
-        <span>${item.tenhh}</span>
-
-        <span style="margin-left:auto; color:red;">
-            ${item.dongia.toLocaleString()}₫
-        </span>
-    </li>
+                data-name="${item.tenhh}"
+                style="cursor:pointer; padding:6px; border-bottom:1px solid #eee;">
+                <img src="/images/${item.hinh}" width="30" height="30"
+                    style="margin-right:6px; object-fit:cover;">
+                <span>${item.tenhh}</span>
+                <span style="margin-left:auto; color:red;">
+                    ${item.dongia.toLocaleString()}₫
+                </span>
+            </li>
         `).join("");
 
-        suggestBox.style.display = "block";
-    });
+            suggestBox.style.display = "block";
+        });
 
-    suggestBox.addEventListener("click", function (e) {
-        if (e.target.closest(".suggest-item")) {
-            let name = e.target.closest(".suggest-item").dataset.name;
-            searchInput.value = name;
-            suggestBox.style.display = "none";
-        }
-    });
+        suggestBox.addEventListener("click", function (e) {
+            const item = e.target.closest(".suggest-item");
+            if (item) {
+                searchInput.value = item.dataset.name;
+                suggestBox.style.display = "none";
+            }
+        });
 
-    document.addEventListener("click", function (e) {
-        if (!searchInput.contains(e.target)) {
-            suggestBox.style.display = "none";
-        }
+        document.addEventListener("click", function (e) {
+            if (!searchInput.contains(e.target)) {
+                suggestBox.style.display = "none";
+            }
+        });
     });
 </script>
 </header>
