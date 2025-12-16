@@ -29,6 +29,57 @@
         <span class="badge bg-primary fs-6">Admin: <span th:text="${session.username}"></span></span>
     </div>
 
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body py-2">
+            <form action="/admin" method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label class="fw-bold"><i class="fas fa-filter me-1"></i>Thống kê theo:</label>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select form-select-sm" name="filterType" id="filterType" onchange="toggleInputs()">
+                        <option value="all" th:selected="${selectedFilter == 'all'}">Tất cả thời gian</option>
+                        <option value="date" th:selected="${selectedFilter == 'date'}">Theo Ngày</option>
+                        <option value="month" th:selected="${selectedFilter == 'month'}">Theo Tháng</option>
+                        <option value="quarter" th:selected="${selectedFilter == 'quarter'}">Theo Quý</option>
+                        <option value="year" th:selected="${selectedFilter == 'year'}">Theo Năm</option>
+                    </select>
+                </div>
+
+                <div class="col-auto filter-input" id="input-date" style="display: none;">
+                    <input type="date" class="form-control form-control-sm" name="dateInput" th:value="${selectedDate}">
+                </div>
+
+                <div class="col-auto filter-input" id="input-month" style="display: none;">
+                    <select class="form-select form-select-sm" name="monthInput">
+                        <option th:each="i : ${#numbers.sequence(1, 12)}"
+                                th:value="${i}" th:text="'Tháng ' + ${i}"
+                                th:selected="${i == selectedMonth}"></option>
+                    </select>
+                </div>
+
+                <div class="col-auto filter-input" id="input-quarter" style="display: none;">
+                    <select class="form-select form-select-sm" name="quarterInput" style="min-width: 110px;">
+                        <option value="1" th:selected="${selectedQuarter == 1}">Quý 1</option>
+                        <option value="2" th:selected="${selectedQuarter == 2}">Quý 2</option>
+                        <option value="3" th:selected="${selectedQuarter == 3}">Quý 3</option>
+                        <option value="4" th:selected="${selectedQuarter == 4}">Quý 4</option>
+                    </select>
+                </div>
+
+                <div class="col-auto filter-input" id="input-year" style="display: none;">
+                    <input type="number" class="form-control form-control-sm" name="yearInput"
+                           placeholder="Năm" min="2000" max="2099"
+                           th:value="${selectedYear}">
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-sm">Xem kết quả</button>
+                    <a href="/admin" class="btn btn-outline-secondary btn-sm" th:if="${selectedFilter != 'all' && selectedFilter != null}">Đặt lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="row mb-5">
         <div class="col-md-4">
             <div class="card admin-stat-card bg-primary text-white p-3">
@@ -91,11 +142,12 @@
                                 <th>Khách Hàng</th>
                                 <th>Ngày Đặt</th>
                                 <th>Tổng Tiền</th>
-                                <th>Trạng Thái</th> <th>Hành Động</th>
+                                <th>Trạng Thái</th>
+                                <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="bill : ${bills}">
+                            <tr th:each="bill : ${billPage.content}">
                                 <td class="fw-bold">#<span th:text="${bill.masohd}"></span></td>
                                 <td>
                                     <span th:text="${bill.tenkh}"></span><br>
@@ -114,7 +166,34 @@
                         </table>
                     </div>
                 </div>
+                <nav aria-label="Page navigation" th:if="${billPage.totalPages > 1}" class="mt-3">
+                    <ul class="pagination justify-content-center">
 
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin(page=0, filterType=${selectedFilter})}">Đầu</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin(page=${currentPage - 1}, filterType=${selectedFilter})}">Trước</a>
+                        </li>
+
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, billPage.totalPages - 1)}"
+                            th:if="${i >= currentPage - 1 and i <= currentPage + 1}"
+                            th:classappend="${currentPage == i} ? 'active'">
+                            <a class="page-link" th:text="${i + 1}"
+                               th:href="@{/admin(page=${i}, filterType=${selectedFilter})}"></a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == billPage.totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin(page=${currentPage + 1}, filterType=${selectedFilter})}">Sau</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == billPage.totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin(page=${billPage.totalPages - 1}, filterType=${selectedFilter})}">Cuối</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
                 <div class="tab-pane fade" id="users" role="tabpanel">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
@@ -236,4 +315,26 @@
 
 
 </body>
+<script>
+    function toggleInputs() {
+        const type = document.getElementById('filterType').value;
+        // Ẩn tất cả trước
+        document.querySelectorAll('.filter-input').forEach(el => el.style.display = 'none');
+
+        // Hiện input tương ứng
+        if (type === 'date') {
+            document.getElementById('input-date').style.display = 'block';
+        } else if (type === 'month') {
+            document.getElementById('input-month').style.display = 'block';
+            document.getElementById('input-year').style.display = 'block';
+        } else if (type === 'quarter') {
+            document.getElementById('input-quarter').style.display = 'block';
+            document.getElementById('input-year').style.display = 'block';
+        } else if (type === 'year') {
+            document.getElementById('input-year').style.display = 'block';
+        }
+    }
+    // Chạy hàm khi trang vừa load để giữ trạng thái input
+    document.addEventListener("DOMContentLoaded", toggleInputs);
+</script>
 </html>
