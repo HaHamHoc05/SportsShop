@@ -32,6 +32,11 @@
     <div class="card mb-4 shadow-sm">
         <div class="card-body py-2">
             <form action="/admin" method="get" class="row g-3 align-items-center">
+                <input type="hidden" name="tab" th:value="${activeTab}">
+                <input type="hidden" name="bPage" th:value="${currentbPage}">
+                <input type="hidden" name="cPage" th:value="${currentcPage}">
+                <input type="hidden" name="pPage" th:value="${currentpPage}">
+
                 <div class="col-auto">
                     <label class="fw-bold"><i class="fas fa-filter me-1"></i>Thống kê theo:</label>
                 </div>
@@ -147,7 +152,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="bill : ${billPage.content}">
+                            <tr th:if="${billPage != null}" th:each="bill : ${billPage.content}">
                                 <td class="fw-bold">#<span th:text="${bill.masohd}"></span></td>
                                 <td>
                                     <span th:text="${bill.tenkh}"></span><br>
@@ -165,35 +170,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div th:replace="~{::paginationFragment(${billPage}, 'orders', 'bPage')}"></div>
                 </div>
-                <nav aria-label="Page navigation" th:if="${billPage.totalPages > 1}" class="mt-3">
-                    <ul class="pagination justify-content-center">
 
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin(page=0, filterType=${selectedFilter})}">Đầu</a>
-                        </li>
-
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin(page=${currentPage - 1}, filterType=${selectedFilter})}">Trước</a>
-                        </li>
-
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, billPage.totalPages - 1)}"
-                            th:if="${i >= currentPage - 1 and i <= currentPage + 1}"
-                            th:classappend="${currentPage == i} ? 'active'">
-                            <a class="page-link" th:text="${i + 1}"
-                               th:href="@{/admin(page=${i}, filterType=${selectedFilter})}"></a>
-                        </li>
-
-                        <li class="page-item" th:classappend="${currentPage == billPage.totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin(page=${currentPage + 1}, filterType=${selectedFilter})}">Sau</a>
-                        </li>
-
-                        <li class="page-item" th:classappend="${currentPage == billPage.totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin(page=${billPage.totalPages - 1}, filterType=${selectedFilter})}">Cuối</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
                 <div class="tab-pane fade" id="users" role="tabpanel">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
@@ -208,14 +187,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="user : ${customers}">
+                            <tr th:if="${customerPage != null}" th:each="user : ${customerPage.content}">
                                 <td th:text="${user.makh}"></td>
                                 <td class="fw-bold" th:text="${user.username}"></td>
                                 <td th:text="${user.tenkh}"></td>
                                 <td th:text="${user.email}"></td>
                                 <td>
-                                        <span th:class="${user.role == 'ADMIN' ? 'badge bg-danger' : 'badge bg-secondary'}"
-                                              th:text="${user.role}"></span>
+                                    <span th:class="${user.role == 'ADMIN' ? 'badge bg-danger' : 'badge bg-secondary'}"
+                                          th:text="${user.role}"></span>
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i> Sửa</button>
@@ -225,10 +204,10 @@
                             </tbody>
                         </table>
                     </div>
+                    <div th:replace="~{::paginationFragment(${customerPage}, 'users', 'cPage')}"></div>
                 </div>
 
                 <div class="tab-pane fade" id="products" role="tabpanel">
-
                     <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
                         <span th:text="${message}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -243,7 +222,6 @@
                             <a th:href="@{/admin/products/add}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Thêm Sản Phẩm</a>
                             <a href="#" class="btn btn-outline-success"><i class="fas fa-file-excel me-2"></i>Xuất Excel</a>
                         </div>
-
                         <form action="#" class="d-flex align-items-center gap-2">
                             <input type="file" class="form-control form-control-sm" style="width: 200px;">
                             <button class="btn btn-sm btn-secondary">Nhập Excel</button>
@@ -265,13 +243,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="prod : ${products}">
+                            <tr th:if="${productPage != null}" th:each="prod : ${productPage.content}">
                                 <td th:text="${prod.mahh}"></td>
                                 <td>
                                     <img th:src="@{'/images/' + ${prod.hinh}}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                                 </td>
                                 <td th:text="${prod.tenhh}" class="fw-bold"></td>
-                                <td th:text="${prod.giamgia} + '%'"></td>
+                                <td th:text="${prod.giamgia} + 'đ' "></td>
                                 <td class="text-center">
                                     <i class="fas fa-star text-warning" th:if="${prod.dacbiet}"></i>
                                 </td>
@@ -304,6 +282,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div th:replace="~{::paginationFragment(${productPage}, 'products', 'pPage')}"></div>
                 </div>
 
             </div>
@@ -313,15 +292,61 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
+<div th:fragment="paginationFragment(pageModel, tabName, paramName)">
+    <nav aria-label="Page navigation" th:if="${pageModel != null and pageModel.totalPages > 1}" class="mt-3">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item" th:classappend="${pageModel.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin(
+                    bPage=${paramName == 'bPage' ? 0 : (billPage != null ? billPage.number : 0)},
+                    cPage=${paramName == 'cPage' ? 0 : (customerPage != null ? customerPage.number : 0)},
+                    pPage=${paramName == 'pPage' ? 0 : (productPage != null ? productPage.number : 0)},
+                    tab=${tabName},
+                    filterType=${selectedFilter},
+                    dateInput=${selectedDate},
+                    monthInput=${selectedMonth},
+                    quarterInput=${selectedQuarter},
+                    yearInput=${selectedYear})}">Đầu</a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, pageModel.totalPages - 1)}"
+                th:if="${i >= pageModel.number - 1 and i <= pageModel.number + 1}"
+                th:classappend="${pageModel.number == i} ? 'active'">
+                <a class="page-link" th:text="${i + 1}"
+                   th:href="@{/admin(
+                    bPage=${paramName == 'bPage' ? i : (billPage != null ? billPage.number : 0)},
+                    cPage=${paramName == 'cPage' ? i : (customerPage != null ? customerPage.number : 0)},
+                    pPage=${paramName == 'pPage' ? i : (productPage != null ? productPage.number : 0)},
+                    tab=${tabName},
+                    filterType=${selectedFilter},
+                    dateInput=${selectedDate},
+                    monthInput=${selectedMonth},
+                    quarterInput=${selectedQuarter},
+                    yearInput=${selectedYear})}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${pageModel.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin(
+                    bPage=${paramName == 'bPage' ? pageModel.totalPages - 1 : (billPage != null ? billPage.number : 0)},
+                    cPage=${paramName == 'cPage' ? pageModel.totalPages - 1 : (customerPage != null ? customerPage.number : 0)},
+                    pPage=${paramName == 'pPage' ? pageModel.totalPages - 1 : (productPage != null ? productPage.number : 0)},
+                    tab=${tabName},
+                    filterType=${selectedFilter},
+                    dateInput=${selectedDate},
+                    monthInput=${selectedMonth},
+                    quarterInput=${selectedQuarter},
+                    yearInput=${selectedYear})}">Cuối</a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
 </body>
 <script>
     function toggleInputs() {
         const type = document.getElementById('filterType').value;
-        // Ẩn tất cả trước
         document.querySelectorAll('.filter-input').forEach(el => el.style.display = 'none');
 
-        // Hiện input tương ứng
         if (type === 'date') {
             document.getElementById('input-date').style.display = 'block';
         } else if (type === 'month') {
@@ -334,7 +359,21 @@
             document.getElementById('input-year').style.display = 'block';
         }
     }
-    // Chạy hàm khi trang vừa load để giữ trạng thái input
     document.addEventListener("DOMContentLoaded", toggleInputs);
+
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleInputs();
+        // Lấy tham số 'tab' từ URL để active đúng tab
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab');
+
+        if (activeTab) {
+            const tabButton = document.getElementById(activeTab + '-tab');
+            if (tabButton) {
+                const tabInstance = new bootstrap.Tab(tabButton);
+                tabInstance.show();
+            }
+        }
+    });
 </script>
 </html>

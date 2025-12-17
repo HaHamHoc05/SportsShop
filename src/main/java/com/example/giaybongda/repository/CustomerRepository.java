@@ -10,4 +10,5 @@ public interface CustomerRepository extends JpaRepository<Customer,Integer> {
     boolean existsByEmail(String email);
     // danh sách lưới
     Optional<Customer> findByUsername(String username);
+
 }

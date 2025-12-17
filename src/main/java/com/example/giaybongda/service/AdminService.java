@@ -1,8 +1,12 @@
 package com.example.giaybongda.service;
 
 import com.example.giaybongda.model.Bill;
+import com.example.giaybongda.model.Customer;
+import com.example.giaybongda.model.Product;
 import com.example.giaybongda.repository.AdminRepository;
 import com.example.giaybongda.repository.BillRepository;
+import com.example.giaybongda.repository.CustomerRepository;
+import com.example.giaybongda.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class AdminService {
@@ -20,6 +25,12 @@ public class AdminService {
 
     @Autowired
     private BillRepository billRepo;
+
+    @Autowired
+    private CustomerRepository customerRepo;
+
+    @Autowired
+    private ProductRepository productRepo;
 
     public Long getTotalRevenue() {
         Long total = adminRepo.getTotalRevenue();
@@ -50,5 +61,16 @@ public class AdminService {
     public Page<Bill> getAllBills(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("masohd").descending());
         return billRepo.findAll(pageable);
+    }
+
+    // lấy danh sác tất cả khách hàng
+    public Page<Customer> findAllCustomers(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("makh").ascending());
+        return customerRepo.findAll(pageable);
+    }
+
+    public Page<Product> findAllProducts(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("mahh").descending());
+        return productRepo.findAll(pageable);
     }
 }

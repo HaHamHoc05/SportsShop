@@ -1,7 +1,10 @@
 package com.example.giaybongda.controller;
 
 import com.example.giaybongda.model.Bill;
+import com.example.giaybongda.model.Customer;
+import com.example.giaybongda.model.Product;
 import com.example.giaybongda.service.AdminService;
+import com.example.giaybongda.service.CustomerService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 
 @Controller
@@ -21,10 +25,15 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private CustomerService customerService;
 
     @GetMapping("/admin")
     public String adminDashboard(HttpSession session, Model model,
-                                 @RequestParam(name= "page", defaultValue = "0") int page,
+                                 @RequestParam(name= "bPage", defaultValue = "0") int bPage,
+                                 @RequestParam(name= "cPage", defaultValue = "0") int cPage,
+                                 @RequestParam(name= "pPage", defaultValue = "0") int pPage,
+                                 @RequestParam(name = "tab", required = false, defaultValue = "orders") String activeTab,
                                  @RequestParam(name = "filterType", required = false, defaultValue = "all") String filterType,
                                  @RequestParam(name = "dateInput", required = false) String dateInput, // Dùng cho theo ngày
                                  @RequestParam(name = "monthInput", required = false) Integer monthInput, // Dùng cho tháng
@@ -38,9 +47,14 @@ public class AdminController {
         if (role == null || !role.equals("ADMIN")) {
             return "redirect:/";
         }
-
         int pageSize = 10;
-        Page<Bill> billPage = adminService.getAllBills(page,pageSize);
+
+        // lấy danh sách khách hàng
+        Page<Customer> customerPage = adminService.findAllCustomers(cPage,pageSize);
+        // lấy danh sách hóa đơn
+        Page<Bill> billPage = adminService.getAllBills(bPage,pageSize);
+        // lấy danh sách sản phẩm
+        Page<Product> productPage = adminService.findAllProducts(pPage,pageSize);
 
         Long totalRevenue;
         Long totalBills;
@@ -98,12 +112,20 @@ public class AdminController {
         }
 
 
+
+        model.addAttribute("customerPage", customerPage);
         model.addAttribute("billPage", billPage);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("productPage", productPage);
+
+        model.addAttribute("currentbPage", bPage);
+        model.addAttribute("currentcPage", cPage);
+        model.addAttribute("currentpPage", pPage);
 
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("totalBills", totalBills);
         model.addAttribute("totalProducts", totalProducts);
+
+        model.addAttribute("activeTab", activeTab);
 
         model.addAttribute("selectedFilter", filterType);
         model.addAttribute("selectedDate", dateInput);
