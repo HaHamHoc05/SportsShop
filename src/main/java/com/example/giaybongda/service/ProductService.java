@@ -6,6 +6,9 @@ import com.example.giaybongda.model.ProductWithPrice;
 import com.example.giaybongda.repository.ProductDetailRepository;
 import com.example.giaybongda.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,4 +52,8 @@ public class ProductService {
         return productRepo.findByTenhhContainingIgnoreCase(keyword);
     }
 
+    public Page<ProductWithPrice> getAllActiveProducts(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return productRepo.findAllWithPriceActive(1,pageable);
+    }
 }

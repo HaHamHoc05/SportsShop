@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,8 +31,9 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
 //phan trang
     @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, MIN(pd.dongia)) " +
             "FROM Product p JOIN p.chiTiet pd " +
+            "WHERE p.tinhtrang = :status " +
             "GROUP BY p.mahh, p.tenhh, p.hinh")
-    Page<ProductWithPrice> findAllWithPrice(Pageable pageable);
+    Page<ProductWithPrice> findAllWithPriceActive(@Param("status") int status, Pageable pageable);
 
 
     @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, min(pd.dongia)) " +

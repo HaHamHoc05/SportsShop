@@ -256,12 +256,15 @@
                                 <td th:text="${#temporals.format(prod.ngaylap, 'dd/MM/yyyy')}"></td>
 
                                 <td class="text-center">
-                                    <span th:if="${prod.tinhtrang == 1}" class="badge bg-success">Hiển thị</span>
-                                    <span th:if="${prod.tinhtrang == 0}" class="badge bg-secondary">Đang ẩn</span>
+                                    <span th:id="'status-label-' + ${prod.mahh}"
+                                          th:class="${prod.tinhtrang == 1 ? 'badge bg-success' : 'badge bg-secondary'}"
+                                          th:text="${prod.tinhtrang == 1 ? 'Hiển thị' : 'Đang ẩn'}">
+                                    </span>
                                 </td>
 
                                 <td class="text-center">
-                                    <a th:href="@{/admin/toggle-status/{id}(id=${prod.mahh})}"
+                                    <a href="javascript:void(0)"
+                                       th:onclick="'toggleProductStatus(' + ${prod.mahh} + ', this)'"
                                        class="btn btn-sm me-1"
                                        th:classappend="${prod.tinhtrang == 1 ? 'btn-outline-secondary' : 'btn-outline-success'}"
                                        th:title="${prod.tinhtrang == 1 ? 'Ẩn sản phẩm này' : 'Hiện sản phẩm này'}">
@@ -384,5 +387,63 @@
             tabInstance.show();
         }
     });
+    //script của ẩn hiện sản phẩm
+    function toggleProductStatus(productId, btnElement) {
+        // Tạo FormData để gửi dữ liệu
+        const formData = new FormData();
+        formData.append('id', productId);
+
+        // Gọi API Controller
+        fetch('/admin/toggle-status', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Chuyển kết quả Map từ Controller sang JSON
+            })
+            .then(data => {
+                if (data.success) {
+                    // Nếu thành công, cập nhật giao diện ngay lập tức
+                    updateUI(productId, data.newStatus, btnElement);
+                } else {
+                    alert("Lỗi: " + (data.message || "Không thể cập nhật trạng thái"));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Đã có lỗi xảy ra khi gọi server!");
+            });
+    }
+
+    // Hàm phụ trợ để đổi màu nút và icon
+    function updateUI(productId, newStatus, btn) {
+        // Tìm thẻ Badge trạng thái
+        // LƯU Ý: Bạn cần đảm bảo trong HTML thẻ span trạng thái có id="status-label-[ID]"
+        const label = document.getElementById('status-label-' + productId);
+        const icon = btn.querySelector('i');
+
+        if (newStatus === 1) {
+            // TRẠNG THÁI: HIỂN THỊ
+            if(label) {
+                label.className = 'badge bg-success';
+                label.textContent = 'Hiển thị';
+            }
+            btn.className = 'btn btn-sm me-1 btn-outline-secondary';
+            btn.title = 'Ẩn sản phẩm này';
+            icon.className = 'fas fa-eye-slash';
+        } else {
+            // TRẠNG THÁI: ẨN
+            if(label) {
+                label.className = 'badge bg-secondary';
+                label.textContent = 'Đang ẩn';
+            }
+            btn.className = 'btn btn-sm me-1 btn-outline-success';
+            btn.title = 'Hiện sản phẩm này';
+            icon.className = 'fas fa-eye';
+        }
+    }
 </script>
 </html>

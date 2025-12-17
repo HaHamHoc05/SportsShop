@@ -24,12 +24,12 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/products")
-    public String allProducts(Model model ,@RequestParam(defaultValue = "0") int page) {
+    public String getAllActiveProducts(Model model ,@RequestParam(defaultValue = "0") int page) {
         int pageSize = 12; // mỗi trang hiển thị 8 sản phẩm
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // Gọi repository phân trang
-        Page<ProductWithPrice> productPage = productRepository.findAllWithPrice(pageable);
+        Page<ProductWithPrice> productPage = productRepository.findAllWithPriceActive(1,pageable);
 
 
         model.addAttribute("products", productPage.getContent());

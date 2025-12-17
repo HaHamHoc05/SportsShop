@@ -144,17 +144,30 @@ public class AdminController {
         }
     @PostMapping("/toggle-status")
     @ResponseBody
-    public Map<String, Object> toggleStatus(@PathVariable("id") int id) {
+    public Map<String, Object> toggleStatus(@RequestParam("id") int id) {
         Map<String, Object> response = new HashMap<>();
+
+        // Tìm sản phẩm (giả sử service trả về Product hoặc null)
         Product product = productService.getById(id);
+
         if (product != null) {
-            product.setTinhtrang(product.getTinhtrang() == 1 ? 0 : 1);
+            // Đảo trạng thái: 1 -> 0, 0 -> 1
+            int newStatus = (product.getTinhtrang() == 1) ? 0 : 1;
+            product.setTinhtrang(newStatus);
+
+            // Lưu vào DB
             productService.save(product);
+
+            // Trả về dữ liệu thành công
             response.put("success", true);
-            response.put("newStatus", product.getTinhtrang());
+            response.put("newStatus", newStatus);
         } else {
+            // Trả về dữ liệu báo lỗi
             response.put("success", false);
+            response.put("message", "Không tìm thấy sản phẩm có ID: " + id);
         }
+
+        // Trả về Map trực tiếp, Spring tự chuyển thành JSON
         return response;
     }
 
