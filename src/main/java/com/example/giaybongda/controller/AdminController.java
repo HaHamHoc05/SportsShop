@@ -267,6 +267,12 @@ public class AdminController {
         return 0;
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable int id) {
+        productService.deleteById(id);
+        return "redirect:/admin?tab=products";
+    }
+
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("product", new Product());
@@ -274,28 +280,49 @@ public class AdminController {
         return "admin/product-form";
     }
 
-    @PostMapping("/save") // Đổi tên mapping để dùng chung cho cả thêm và sửa
+    @PostMapping("/save")
     public String saveProduct(@ModelAttribute Product product, @RequestParam("imageFile") MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 String filename = file.getOriginalFilename();
-                Path path = Paths.get("src/main/resources/static/images/" + filename);
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                // Lưu tên file vào database
+
+                // Lấy đường dẫn gốc của dự án (nơi chứa pom.xml)
+                String projectDir = System.getProperty("user.dir");
+
+                // --- BƯỚC 1: LƯU VÀO SRC (Nguồn) ---
+                // Mục đích: Để file tồn tại vĩnh viễn, không bị mất khi Clean/Build lại
+                Path srcPath = Paths.get(projectDir, "src", "main", "resources", "static", "images", filename);
+                if (!Files.exists(srcPath.getParent())) {
+                    Files.createDirectories(srcPath.getParent());
+                }
+                Files.copy(file.getInputStream(), srcPath, StandardCopyOption.REPLACE_EXISTING);
+
+
+                // đọc được file ngay lập tức mà không cần restart
+                Path targetPath = Paths.get(projectDir, "target", "classes", "static", "images", filename);
+                // Tạo thư mục nếu chưa tồn tại
+                if (!Files.exists(targetPath.getParent())) {
+                    Files.createDirectories(targetPath.getParent());
+                }
+                //gọi file.getInputStream() lần nữa vì stream cũ đã đóng
+                Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
                 product.setHinh(filename);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (product.getMahh() != 0) {
             // Nếu là sửa và không chọn ảnh mới, giữ nguyên ảnh cũ
             Product existingProduct = productService.getById(product.getMahh());
-            product.setHinh(existingProduct.getHinh());
+            if (existingProduct != null) {
+                product.setHinh(existingProduct.getHinh());
+            }
         }
 
         productService.save(product);
         return "redirect:/admin?tab=products";
     }
-
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") int id, Model model) {
         Product product = productService.getById(id);

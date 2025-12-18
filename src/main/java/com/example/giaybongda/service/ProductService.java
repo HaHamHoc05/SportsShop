@@ -25,6 +25,10 @@ public class ProductService {
         return productRepo.findAll();
     }
 
+    public void deleteById(int id) {
+        productRepo.deleteById(id);
+    }
+
     // New: get product by id
     public Product getById(int id) {
         Optional<Product> o = productRepo.findById(id);
