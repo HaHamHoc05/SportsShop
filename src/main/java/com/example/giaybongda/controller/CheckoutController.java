@@ -50,8 +50,6 @@ public class CheckoutController {
     public String checkoutFrom(HttpSession session, Model model) {
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId == null) {
-            // Chưa đăng nhập -> quay về trang login
-            // redirectTo dùng để login xong quay lại checkout
             return "redirect:/login?redirect=/cart";
         }
         List<CartItem> items = cartService.getItems(session);
@@ -89,7 +87,6 @@ public class CheckoutController {
         session.setAttribute("email", email);
         session.setAttribute("diachi", diachi);
 
-        if (userid == null) {
             boolean missing = false;
             StringBuilder sb = new StringBuilder();
             if (tenkh == null || tenkh.trim().isEmpty()) {
@@ -103,7 +100,11 @@ public class CheckoutController {
             if (sodienthoai == null || sodienthoai.trim().isEmpty()) {
                 missing = true;
                 sb.append("Số điện thoại không được để trống. ");
+            } else if (!sodienthoai.matches("^0\\d{9}$")) {
+                missing = true;
+                sb.append("Số điện thoại không đúng định dạng (phải gồm 10 chữ số và bắt đầu bằng 0). ");
             }
+
             if (diachi == null || diachi.trim().isEmpty()) {
                 missing = true;
                 sb.append("Địa chỉ không được để trống. ");
@@ -114,7 +115,7 @@ public class CheckoutController {
                 model.addAttribute("total", total);
                 return "bill";
             }
-        }
+
 
         // xu ly hoa don ( makh neu dang nhap thanh cong)
         Integer makh = userid;

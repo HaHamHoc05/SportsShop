@@ -13,35 +13,35 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Integer> {
-    Page<Product> findAll(Pageable pageable);
 
-    // 4 sản phẩm nổi bật nhiều lượt xem nhất, lấy giá thấp nhất từ chi tiết
-    @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, pd.dongia) " +
+    // 1. Lọc sản phẩm nổi bật
+    @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, MIN(pd.dongia)) " +
             "FROM Product p JOIN p.chiTiet pd " +
+            "WHERE p.tinhtrang = 1 " + // Thêm dòng này
+            "GROUP BY p.mahh, p.tenhh, p.hinh, p.soluotxem " +
             "ORDER BY p.soluotxem DESC")
     List<ProductWithPrice> findTopByViews(Pageable pageable);
 
-    // 4 sản phẩm giảm giá (giamgia > 0), lấy giá thấp nhất
+    // 2. Lọc sản phẩm giảm giá
     @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, MIN(pd.dongia)) " +
             "FROM Product p JOIN p.chiTiet pd " +
-            "WHERE p.giamgia > 0 " +
+            "WHERE p.giamgia > 0 AND p.tinhtrang = 1 " + // Thêm p.tinhtrang = 1
             "GROUP BY p.mahh, p.tenhh, p.hinh, p.giamgia " +
             "ORDER BY p.giamgia DESC")
     List<ProductWithPrice> findTopSaleProducts(Pageable pageable);
-//phan trang
+
+    // 3. Lọc trang danh sách sản phẩm (đã có trong code của bạn nhưng cần kiểm tra tham số)
     @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, MIN(pd.dongia)) " +
             "FROM Product p JOIN p.chiTiet pd " +
-            "WHERE p.tinhtrang = :status " +
+            "WHERE p.tinhtrang = 1 " +
             "GROUP BY p.mahh, p.tenhh, p.hinh")
-    Page<ProductWithPrice> findAllWithPriceActive(@Param("status") int status, Pageable pageable);
+    Page<ProductWithPrice> findAllWithPriceActive(Pageable pageable);
 
-
+    // 4. Lọc kết quả tìm kiếm
     @Query("SELECT new com.example.giaybongda.model.ProductWithPrice(p.mahh, p.tenhh, p.hinh, min(pd.dongia)) " +
             "FROM Product p JOIN p.chiTiet pd " +
-            "WHERE LOWER(p.tenhh) LIKE LOWER(CONCAT('%', :keyword, '%'))\n" +
+            "WHERE LOWER(p.tenhh) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "AND p.tinhtrang = 1 " + // Thêm dòng này
             "GROUP BY p.mahh, p.tenhh, p.hinh")
-    List<ProductWithPrice> findByTenhhContainingIgnoreCase(String keyword);
-
-
-
+    List<ProductWithPrice> findByTenhhContainingIgnoreCase(@Param("keyword") String keyword, int i);
 }

@@ -4,6 +4,7 @@ import com.example.giaybongda.model.Bill;
 import com.example.giaybongda.model.Customer;
 import com.example.giaybongda.model.Product;
 import com.example.giaybongda.service.AdminService;
+import com.example.giaybongda.service.CategoryService;
 import com.example.giaybongda.service.CustomerService;
 import com.example.giaybongda.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
@@ -34,12 +41,14 @@ public class AdminController {
     private CustomerService customerService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping
     public String adminDashboard(HttpSession session, Model model,
-                                 @RequestParam(name= "bPage", defaultValue = "0") int bPage,
-                                 @RequestParam(name= "cPage", defaultValue = "0") int cPage,
-                                 @RequestParam(name= "pPage", defaultValue = "0") int pPage,
+                                 @RequestParam(name = "bPage", defaultValue = "0") int bPage,
+                                 @RequestParam(name = "cPage", defaultValue = "0") int cPage,
+                                 @RequestParam(name = "pPage", defaultValue = "0") int pPage,
                                  @RequestParam(name = "tab", required = false, defaultValue = "orders") String activeTab,
                                  @RequestParam(name = "filterType", required = false, defaultValue = "all") String filterType,
                                  @RequestParam(name = "dateInput", required = false) String dateInput, // Dùng cho theo ngày
@@ -57,11 +66,11 @@ public class AdminController {
         int pageSize = 10;
 
         // lấy danh sách khách hàng
-        Page<Customer> customerPage = adminService.findAllCustomers(cPage,pageSize);
+        Page<Customer> customerPage = adminService.findAllCustomers(cPage, pageSize);
         // lấy danh sách hóa đơn
-        Page<Bill> billPage = adminService.getAllBills(bPage,pageSize);
+        Page<Bill> billPage = adminService.getAllBills(bPage, pageSize);
         // lấy danh sách sản phẩm
-        Page<Product> productPage = adminService.findAllProducts(pPage,pageSize);
+        Page<Product> productPage = adminService.findAllProducts(pPage, pageSize);
 
         Long totalRevenue;
         Long totalBills;
@@ -99,7 +108,7 @@ public class AdminController {
                     break;
                 case "year":
                     startDate = LocalDate.of(currentYear, 1, 1);
-                    endDate = LocalDate.of(currentYear,     12, 31);
+                    endDate = LocalDate.of(currentYear, 12, 31);
                     isFiltered = true;
                     break;
                 default:
@@ -117,7 +126,6 @@ public class AdminController {
             totalRevenue = adminService.getTotalRevenue();
             totalBills = adminService.getTotalBills();
         }
-
 
 
         model.addAttribute("customerPage", customerPage);
@@ -141,7 +149,8 @@ public class AdminController {
         model.addAttribute("selectedYear", yearInput != null ? yearInput : LocalDate.now().getYear());
 
         return "Admin/manage";
-        }
+    }
+
     @PostMapping("/toggle-status")
     @ResponseBody
     public Map<String, Object> toggleStatus(@RequestParam("id") int id) {
@@ -233,10 +242,14 @@ public class AdminController {
     private String getCellValueAsString(Cell cell) {
         if (cell == null) return "";
         switch (cell.getCellType()) {
-            case STRING: return cell.getStringCellValue();
-            case NUMERIC: return String.valueOf((int) cell.getNumericCellValue());
-            case BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
-            default: return "";
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf((int) cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return "";
         }
     }
 
@@ -252,6 +265,36 @@ public class AdminController {
             }
         }
         return 0;
+    }
+
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("product", new Product());
+        model.addAttribute("categories", categoryService.findAll());
+        return "admin/product-form";
+    }
+
+    @PostMapping("/add")
+    public String addProduct(@ModelAttribute Product product, @RequestParam("imageFile") MultipartFile file) {
+        // file rỗng thi?
+        if (!file.isEmpty()) {
+            try {
+                // lấy tên gốc của file upload
+                String filename = file.getOriginalFilename();
+                // tạo đường dẫn lưu file
+                Path path = Paths.get("src/main/resources/static/images/" + filename);
+                // luu file vào đường dẫn path
+                // file.getInputStream(): lấy luồng dữ liệu từ file upload
+                // File.copy(): sao chép dữ liệu từ luồng vào đường dẫn, tức ghi file vào folder
+                // StandardCopyOption.REPLACE_EXISTING: nếu file đã tồn tại thì ghi đè lên
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                product.setHinh("/images/" + filename);
+            } catch (Exception e) {
+                // Handle error, perhaps add error message
+            }
+        }
+        productService.save(product);
+        return "redirect:/products";
     }
 
 }

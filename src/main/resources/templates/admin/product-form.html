@@ -27,7 +27,7 @@
             <h5 class="mb-0 fw-bold text-primary">Thông tin sản phẩm</h5>
         </div>
         <div class="card-body p-4">
-            <form th:action="${product.mahh != null} ? @{/edit/{id}(id=${product.mahh})} : @{/add}"
+            <form  th:action="${product.mahh == null} ? @{/add} : @{/edit/{id}(id=${product.mahh})}"
                   th:object="${product}"
                   method="post"
                   enctype="multipart/form-data"
@@ -52,7 +52,7 @@
                 <div class="col-md-3">
                     <label for="giamgia" class="form-label fw-bold">Giảm giá </label>
                     <div class="input-group">
-                        <input type="number" step="0.01" class="form-control" id="giamgia" th:field="${product.giamgia}" min="0" max="100">
+                        <input type="number" step="0.01" class="form-control" id="giamgia" th:field="${product.giamgia}" min="0" max="1000000">
                         <span class="input-group-text">đ</span>
                     </div>
                 </div>

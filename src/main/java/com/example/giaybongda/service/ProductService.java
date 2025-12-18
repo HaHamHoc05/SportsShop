@@ -49,11 +49,11 @@ public class ProductService {
         return null;
     }
     public List<ProductWithPrice> searchProducts(String keyword) {
-        return productRepo.findByTenhhContainingIgnoreCase(keyword);
+        return productRepo.findByTenhhContainingIgnoreCase(keyword,1);
     }
 
     public Page<ProductWithPrice> getAllActiveProducts(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return productRepo.findAllWithPriceActive(1,pageable);
+        return productRepo.findAllWithPriceActive(pageable);
     }
 }

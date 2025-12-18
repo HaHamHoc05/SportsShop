@@ -24,13 +24,10 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/products")
-    public String getAllActiveProducts(Model model ,@RequestParam(defaultValue = "0") int page) {
+    public String getAllActiveProducts(Model model , @RequestParam(defaultValue = "0") int page) {
         int pageSize = 12; // mỗi trang hiển thị 8 sản phẩm
-        Pageable pageable = PageRequest.of(page, pageSize);
-
         // Gọi repository phân trang
-        Page<ProductWithPrice> productPage = productRepository.findAllWithPriceActive(1,pageable);
-
+        Page<ProductWithPrice> productPage = productService.getAllActiveProducts(page, pageSize);
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
@@ -47,8 +44,8 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public String product(@PathVariable("id") int id, Model model) {
         var product = productService.getById(id);
-        if (product == null) {
-            return "redirect:/"; // or show a 404 page
+        if (product == null || product.getTinhtrang() == 0) {
+            return "redirect:/products";
         }
 
         // --- Tăng số lượt xem ---

@@ -15,6 +15,7 @@ import java.util.List;
 public class HomeController {
     @Autowired
     private ProductRepository productRepository;
+
     @GetMapping("/" )
     public String homePage(Model model) {
         List<ProductWithPrice> sanPhamNoiBat = productRepository.findTopByViews(PageRequest.of(0, 4));
