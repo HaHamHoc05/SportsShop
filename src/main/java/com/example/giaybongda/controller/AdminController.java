@@ -274,27 +274,37 @@ public class AdminController {
         return "admin/product-form";
     }
 
-    @PostMapping("/add")
-    public String addProduct(@ModelAttribute Product product, @RequestParam("imageFile") MultipartFile file) {
-        // file rỗng thi?
+    @PostMapping("/save") // Đổi tên mapping để dùng chung cho cả thêm và sửa
+    public String saveProduct(@ModelAttribute Product product, @RequestParam("imageFile") MultipartFile file) {
         if (!file.isEmpty()) {
             try {
-                // lấy tên gốc của file upload
                 String filename = file.getOriginalFilename();
-                // tạo đường dẫn lưu file
                 Path path = Paths.get("src/main/resources/static/images/" + filename);
-                // luu file vào đường dẫn path
-                // file.getInputStream(): lấy luồng dữ liệu từ file upload
-                // File.copy(): sao chép dữ liệu từ luồng vào đường dẫn, tức ghi file vào folder
-                // StandardCopyOption.REPLACE_EXISTING: nếu file đã tồn tại thì ghi đè lên
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                product.setHinh("/images/" + filename);
+                // Lưu tên file vào database
+                product.setHinh(filename);
             } catch (Exception e) {
-                // Handle error, perhaps add error message
+                e.printStackTrace();
             }
+        } else if (product.getMahh() != 0) {
+            // Nếu là sửa và không chọn ảnh mới, giữ nguyên ảnh cũ
+            Product existingProduct = productService.getById(product.getMahh());
+            product.setHinh(existingProduct.getHinh());
         }
+
         productService.save(product);
-        return "redirect:/products";
+        return "redirect:/admin?tab=products";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") int id, Model model) {
+        Product product = productService.getById(id);
+        if (product != null) {
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.findAll());
+            return "admin/product-form";
+        }
+        return "redirect:/admin?tab=products";
     }
 
 }
